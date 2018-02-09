@@ -2,10 +2,17 @@ var renderer	= new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+var myShakeEvent = new Shake({
+  threshold: 15, // optional shake strength threshold
+  timeout: 10 // optional, determines the frequency of event generation
+});
+
+myShakeEvent.start();
+
 var onRenderFcts= [];
 var scene	= new THREE.Scene();
 var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000 )
-camera.position.z = 1
+camera.position.z = 10
 
 //////////////////////////////////////////////////////////////////////////////////
 //		create a texture Cube						//
@@ -30,7 +37,7 @@ scene.add(mesh)
 // position the mesh
 mesh.position.x = 0
 mesh.position.y = 0
-mesh.position.z = -10
+mesh.position.z = -15
 // set the scale of the mesh
 mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
 
@@ -47,17 +54,19 @@ document.addEventListener('mousemove', function(event){
 //		Event						//
 //////////////////////////////////////////////////////////////////////////////////
 
+window.addEventListener('shake', shakeEventDidOccur, false);
 
-window.addEventListener('keydown', (event) => {
+//function to call when shake occurs
+function shakeEventDidOccur () {
 
-  switch (event.which) {
-    case 32:
-    
-    console.log('Amesh.position.x', mesh.position.x);
-    console.log('Amesh.position.y', mesh.position.y);
-    console.log('ACamera.position.z', camera.position.x);
-    console.log('ACamera.position.z', camera.position.y);
-    console.log('positon', scene.position);
+    var mesh	= new THREEx.BubbleMesh(textureCube)
+    scene.add(mesh)
+    // position the mesh
+    mesh.position.x = 0
+    mesh.position.y = 0
+    mesh.position.z = - 10
+    // set the scale of the mesh
+    mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
 
     onRenderFcts.push(function(delta, now){
       mesh.position.x += 0.5
@@ -66,6 +75,34 @@ window.addEventListener('keydown', (event) => {
       camera.position.x += 0.5
       camera.position.y += 0.5
     })
+}
+
+
+window.addEventListener('keydown', (event) => {
+
+  switch (event.which) {
+    case 32:
+    var mesh	= new THREEx.BubbleMesh(textureCube)
+    scene.add(mesh)
+
+    mesh.position.x += 0.5
+    mesh.position.y += 0.5
+    // mesh.scale.multiplyScalar(mesh.scale);
+    
+    console.log('Amesh.position.x', mesh.position.x);
+    console.log('Amesh.position.y', mesh.position.y);
+    console.log('ACamera.position.z', camera.position.x);
+    console.log('ACamera.position.z', camera.position.y);
+    console.log('positon', scene.position);
+
+    // onRenderFcts.push(function(delta, now){
+    //   if (camera.position.x < mesh.position.x) {
+    //     mesh.position.x += 0.5
+    //     mesh.position.y += 0.5   
+    //     camera.position.x += 0.5
+    //     camera.position.y += 0.5
+    //   }
+    // })
     
       break;
   
