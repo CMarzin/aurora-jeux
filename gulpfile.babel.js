@@ -15,7 +15,7 @@ gulp.task("html", () => {
 });
 
 gulp.task("vendor", () => {
-    return gulp.src("./app/vendor/*.js")
+    return gulp.src("./app/vendor/*")
         .pipe(gulp.dest("./build/vendor"))
         .pipe(browserSync.stream());
 });

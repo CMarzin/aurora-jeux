@@ -55,25 +55,23 @@ document.addEventListener('mousemove', function (event) {
 
 window.addEventListener('shake', shakeEventDidOccur, false);
 
+window.addEventListener('click', function () {
+  var audio = new Audio('../vendor/bulles.mp3');
+  audio.play();
+});
+
 //function to call when shake occurs
 function shakeEventDidOccur() {
 
+  var audio = new Audio('../vendor/bulles.mp3');
+  audio.play();
+
   var mesh = new THREEx.BubbleMesh(textureCube);
   scene.add(mesh);
-  // position the mesh
-  mesh.position.x = 0;
-  mesh.position.y = 0;
-  mesh.position.z = -10;
-  // set the scale of the mesh
-  mesh.scale.multiplyScalar(Math.random() * 1 + 1);
 
-  onRenderFcts.push(function (delta, now) {
-    mesh.position.x += 0.5;
-    mesh.position.y += 0.5;
-
-    camera.position.x += 0.5;
-    camera.position.y += 0.5;
-  });
+  mesh.position.x = (Math.random() - 0.5) * 5;
+  mesh.position.y = (Math.random() - 0.5) * 5;
+  mesh.position.z = (Math.random() - 0.5) * 2 - 2;
 }
 
 window.addEventListener('keydown', function (event) {
@@ -83,8 +81,12 @@ window.addEventListener('keydown', function (event) {
       var mesh = new THREEx.BubbleMesh(textureCube);
       scene.add(mesh);
 
-      mesh.position.x += 0.5;
-      mesh.position.y += 0.5;
+      mesh.position.x = (Math.random() - 0.5) * 5;
+      mesh.position.y = (Math.random() - 0.5) * 5;
+      mesh.position.z = (Math.random() - 0.5) * 2 - 2;
+
+      var audio = new Audio('../vendor/bulles.mp3');
+      audio.play();
       // mesh.scale.multiplyScalar(mesh.scale);
 
       console.log('Amesh.position.x', mesh.position.x);
@@ -94,12 +96,10 @@ window.addEventListener('keydown', function (event) {
       console.log('positon', scene.position);
 
       // onRenderFcts.push(function(delta, now){
-      //   if (camera.position.x < mesh.position.x) {
-      //     mesh.position.x += 0.5
-      //     mesh.position.y += 0.5   
+      //     mesh.position.x = (Math.random()-0.5)*5
+      //     mesh.position.y = (Math.random()-0.5)*5
       //     camera.position.x += 0.5
       //     camera.position.y += 0.5
-      //   }
       // })
 
       break;
