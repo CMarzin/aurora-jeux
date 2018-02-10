@@ -53,18 +53,19 @@ document.addEventListener('mousemove', function(event){
 //////////////////////////////////////////////////////////////////////////////////
 //		Event						//
 //////////////////////////////////////////////////////////////////////////////////
+var audio = new Audio('../vendor/bulles.mp3');
 
 window.addEventListener('shake', shakeEventDidOccur, false);
 
-window.addEventListener('click', () => {
-  var audio = new Audio('../vendor/bulles.mp3');
+// NEED to trigger a user action in order to play the sound on IOS ....
+const button = document.querySelector('button');
+
+button.addEventListener('click', () => {
   audio.play();
 })
-
 //function to call when shake occurs
 function shakeEventDidOccur () {
 
-var audio = new Audio('../vendor/bulles.mp3');
 audio.play();
 
   var mesh	= new THREEx.BubbleMesh(textureCube)
