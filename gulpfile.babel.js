@@ -36,7 +36,7 @@ gulp.task("styles", () => {
 
 gulp.task("scripts", () => {
     return browserify({
-            entries: ["./app/scripts/main.js"]
+            entries: ["./app/scripts/main.js", "./app/vendor/threex.bubble.js"]
         })
         .transform(babelify.configure({
             presets: ["es2015"]

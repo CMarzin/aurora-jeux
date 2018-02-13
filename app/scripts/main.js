@@ -32,14 +32,22 @@ textureCube.format = THREE.RGBFormat
 //////////////////////////////////////////////////////////////////////////////////
 
 
-var mesh	= new THREEx.BubbleMesh(textureCube)
+for (let i = 0; i < 100; i++) {
+  var mesh	= new THREEx.BubbleMesh(textureCube)
 scene.add(mesh)
 // position the mesh
-mesh.position.x = 0
-mesh.position.y = 0
-mesh.position.z = -15
+mesh.position.x = (Math.random()-0.5)*10
+mesh.position.y = -10
+mesh.position.z = 0
 // set the scale of the mesh
-mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
+// mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
+}
+
+let min = 1;
+let max = 100;
+let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+console.log('window.innerWidth', (Math.random()-0.5)*10)
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Camera Controls							//
@@ -49,6 +57,12 @@ document.addEventListener('mousemove', function(event){
   mouse.x	= (event.clientX / window.innerWidth ) - 0.5
   mouse.y	= (event.clientY / window.innerHeight) - 0.5
 }, false)
+
+onRenderFcts.push(function(delta, now){
+  camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+  camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+  // camera.lookAt( scene.position )
+})
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Event						//
@@ -62,40 +76,47 @@ const button = document.querySelector('button');
 
 button.addEventListener('click', () => {
   audio.play();
+  var timeleft = 10;
+  var downloadTimer = setInterval(function(){
+  timeleft--;
+  document.getElementById("countdowntimer").textContent = timeleft;
+  if(timeleft <= 0)
+      clearInterval(downloadTimer);
+  },1000);
 })
 //function to call when shake occurs
 function shakeEventDidOccur () {
-
+var audio = new Audio('../vendor/bulles.mp3');
 audio.play();
 
   var mesh	= new THREEx.BubbleMesh(textureCube)
   scene.add(mesh)
 
-  mesh.position.x = (Math.random()-0.5)*5
-  mesh.position.y = (Math.random()-0.5)*5
-  mesh.position.z = (Math.random()-0.5)*2 - 2
+  mesh.position.x = Math.random() * window.innerWidth
+  mesh.position.y = 0
+  mesh.position.z = (Math.random()-0.5)*4 - 4
 }
 
 window.addEventListener('keydown', (event) => {
 
   switch (event.which) {
     case 32:
-    var mesh	= new THREEx.BubbleMesh(textureCube)
-    scene.add(mesh)
+    // var mesh	= new THREEx.BubbleMesh(textureCube)
+    // scene.add(mesh)
 
-    mesh.position.x = (Math.random()-0.5)*5
-		mesh.position.y = (Math.random()-0.5)*5
-    mesh.position.z = (Math.random()-0.5)*2 - 2
+    // mesh.position.x = (Math.random()-0.5)*5
+		// mesh.position.y = -10
+    // mesh.position.z = (Math.random()-0.5)*2 - 2
     
     var audio = new Audio('../vendor/bulles.mp3');
     audio.play();
-    // mesh.scale.multiplyScalar(mesh.scale);
+
     
-    console.log('Amesh.position.x', mesh.position.x);
-    console.log('Amesh.position.y', mesh.position.y);
-    console.log('ACamera.position.z', camera.position.x);
-    console.log('ACamera.position.z', camera.position.y);
-    console.log('positon', scene.position);
+    // console.log('Amesh.position.x', mesh.position.x);
+    // console.log('Amesh.position.y', mesh.position.y);
+    // console.log('ACamera.position.z', camera.position.x);
+    // console.log('ACamera.position.z', camera.position.y);
+    // console.log('positon', scene.position);
 
     // onRenderFcts.push(function(delta, now){
     //     mesh.position.x = (Math.random()-0.5)*5
@@ -103,6 +124,26 @@ window.addEventListener('keydown', (event) => {
     //     camera.position.x += 0.5
     //     camera.position.y += 0.5
     // })
+
+    // if (scene.children.length > 5) {
+    //   let min = 1;
+    //   let max = 6;
+    //   let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    //   scene.remove(scene.children[random])
+    // }
+      let min = 1;
+      let max = 100;
+      let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    onRenderFcts.push(function(delta, now){
+      var angle	= 0.01  * now * Math.PI * 2;
+      setInterval( () => {
+        angle = 0
+      }, 100)
+      console.log('angle', angle)
+      scene.children[random].position.y = 4 * angle;
+    })
     
       break;
   
@@ -113,7 +154,7 @@ window.addEventListener('keydown', (event) => {
 })
 
 
-
+console.log('scene', scene.children)
 //////////////////////////////////////////////////////////////////////////////////
 //		add a skybox							//
 //////////////////////////////////////////////////////////////////////////////////
