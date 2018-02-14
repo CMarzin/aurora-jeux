@@ -97,26 +97,14 @@ audio.play();
   mesh.position.z = (Math.random()-0.5)*4 - 4
 }
 
+let counterBubble = 0;  
+
 window.addEventListener('keydown', (event) => {
 
   switch (event.which) {
-    case 32:
-    // var mesh	= new THREEx.BubbleMesh(textureCube)
-    // scene.add(mesh)
-
-    // mesh.position.x = (Math.random()-0.5)*5
-		// mesh.position.y = -10
-    // mesh.position.z = (Math.random()-0.5)*2 - 2
-    
+    case 32:    
     var audio = new Audio('../vendor/bulles.mp3');
     audio.play();
-
-    
-    // console.log('Amesh.position.x', mesh.position.x);
-    // console.log('Amesh.position.y', mesh.position.y);
-    // console.log('ACamera.position.z', camera.position.x);
-    // console.log('ACamera.position.z', camera.position.y);
-    // console.log('positon', scene.position);
 
     // onRenderFcts.push(function(delta, now){
     //     mesh.position.x = (Math.random()-0.5)*5
@@ -125,23 +113,15 @@ window.addEventListener('keydown', (event) => {
     //     camera.position.y += 0.5
     // })
 
-    // if (scene.children.length > 5) {
-    //   let min = 1;
-    //   let max = 6;
-    //   let random = Math.floor(Math.random() * (max - min + 1)) + min;
+    let min = 1;
+    let max = 100;
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    //   scene.remove(scene.children[random])
-    // }
-      let min = 1;
-      let max = 100;
-      let random = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    onRenderFcts.push(function(delta, now){
+    onRenderFcts.push( (delta, now) => {
       var angle	= 0.01  * now * Math.PI * 2;
-      setInterval( () => {
-        angle = 0
-      }, 100)
-      console.log('angle', angle)
+      console.log('now', now)
+      console.log('delta', delta)
+      // if (counterBubble)
       scene.children[random].position.y = 4 * angle;
     })
     
