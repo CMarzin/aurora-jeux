@@ -1,3 +1,6 @@
+// import bubble from './bubble.js'
+// bubble();
+
 var renderer	= new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -11,6 +14,7 @@ myShakeEvent.start();
 
 var onRenderFcts= [];
 var scene	= new THREE.Scene();
+scene.background = new THREE.Color( 0xffffff );
 var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000 )
 camera.position.z = 10
 
@@ -18,14 +22,31 @@ camera.position.z = 10
 //		create a texture Cube						//
 //////////////////////////////////////////////////////////////////////////////////
 var path	= "images/"
-var format	= '.jpg'
+var format	= '.png'
+// var urls	= [
+//   path + 'shape' + format, path + 'negx' + format,
+//   path + 'posy' + format, path + 'negy' + format,
+//   path + 'posz' + format, path + 'negz' + format
+// ]
+
 var urls	= [
-  path + 'posx' + format, path + 'negx' + format,
-  path + 'posy' + format, path + 'negy' + format,
-  path + 'posz' + format, path + 'negz' + format
+  path + 'sposx' + format, path + 'snegx' + format,
+  path + 'sposy' + format, path + 'snegy' + format,
+  path + 'sposz' + format, path + 'snegz' + format
+]
+
+var urls	= [
+  path + 'shape' + format
 ]
 var textureCube = THREE.ImageUtils.loadTextureCube(urls)
 textureCube.format = THREE.RGBFormat
+
+var texture = new THREE.TextureLoader().load( "images/shape.png" );
+
+material = new THREE.MeshBasicMaterial( { map: texture} );
+
+console.log('texture', material)
+console.log('textureCube', textureCube)
 
 //////////////////////////////////////////////////////////////////////////////////
 //		comment								//
@@ -33,14 +54,14 @@ textureCube.format = THREE.RGBFormat
 
 
 for (let i = 0; i < 100; i++) {
-  var mesh	= new THREEx.BubbleMesh(textureCube)
-scene.add(mesh)
-// position the mesh
-mesh.position.x = (Math.random()-0.5)*10
-mesh.position.y = -10
-mesh.position.z = 0
-// set the scale of the mesh
-// mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
+  var mesh	= new THREEx.BubbleMesh(material)
+  scene.add(mesh)
+  // position the mesh
+  mesh.position.x = (Math.random()-0.5)*10
+  mesh.position.y = -15
+  mesh.position.z = 0
+  // set the scale of the mesh
+  mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
 }
 
 let min = 1;
@@ -59,8 +80,8 @@ document.addEventListener('mousemove', function(event){
 }, false)
 
 onRenderFcts.push(function(delta, now){
-  camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
-  camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
+  // camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+  // camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
   // camera.lookAt( scene.position )
 })
 
@@ -84,12 +105,13 @@ button.addEventListener('click', () => {
       clearInterval(downloadTimer);
   },1000);
 })
+
 //function to call when shake occurs
 function shakeEventDidOccur () {
-var audio = new Audio('../vendor/bulles.mp3');
-audio.play();
+  const audio = new Audio('../vendor/bulles.mp3');
+  audio.play();
 
-  var mesh	= new THREEx.BubbleMesh(textureCube)
+  let mesh	= new THREEx.BubbleMesh(textureCube)
   scene.add(mesh)
 
   mesh.position.x = Math.random() * window.innerWidth
@@ -97,34 +119,25 @@ audio.play();
   mesh.position.z = (Math.random()-0.5)*4 - 4
 }
 
-let counterBubble = 0;  
-
-window.addEventListener('keydown', (event) => {
+window.addEventListener('keyup', (event) => {
 
   switch (event.which) {
-    case 32:    
-    var audio = new Audio('../vendor/bulles.mp3');
-    audio.play();
+    case 32: 
 
-    // onRenderFcts.push(function(delta, now){
-    //     mesh.position.x = (Math.random()-0.5)*5
-    //     mesh.position.y = (Math.random()-0.5)*5
-    //     camera.position.x += 0.5
-    //     camera.position.y += 0.5
-    // })
+      const audio = new Audio('../vendor/bulles.mp3');
+      audio.play();
 
-    let min = 1;
-    let max = 100;
-    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+      let min = 1;
+      let max = 100;
+      let random = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    onRenderFcts.push( (delta, now) => {
-      var angle	= 0.01  * now * Math.PI * 2;
-      console.log('now', now)
-      console.log('delta', delta)
-      // if (counterBubble)
-      scene.children[random].position.y = 4 * angle;
-    })
-    
+      let marginRandom = Math.random()
+      let firsTime = true;
+
+      onRenderFcts.push( (delta, now) => {
+        let angle	= (0.01  * now * Math.PI * 2) - marginRandom;
+        scene.children[random].position.y = 20 * angle;
+      })   
       break;
   
     default:
@@ -133,8 +146,6 @@ window.addEventListener('keydown', (event) => {
   event.preventDefault();
 })
 
-
-console.log('scene', scene.children)
 //////////////////////////////////////////////////////////////////////////////////
 //		add a skybox							//
 //////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +159,7 @@ var material	= new THREE.ShaderMaterial( {
 })
 var geometry	= new THREE.CubeGeometry(5000, 500, 500)
 var meshSkybox	= new THREE.Mesh(geometry, material);
-scene.add( meshSkybox );
+// scene.add( meshSkybox );
 
 
 //////////////////////////////////////////////////////////////////////////////////

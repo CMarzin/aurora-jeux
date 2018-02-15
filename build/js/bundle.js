@@ -1,6 +1,9 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 'use strict';
 
+// import bubble from './bubble.js'
+// bubble();
+
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -14,6 +17,7 @@ myShakeEvent.start();
 
 var onRenderFcts = [];
 var scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
 camera.position.z = 10;
 
@@ -21,10 +25,25 @@ camera.position.z = 10;
 //		create a texture Cube						//
 //////////////////////////////////////////////////////////////////////////////////
 var path = "images/";
-var format = '.jpg';
-var urls = [path + 'posx' + format, path + 'negx' + format, path + 'posy' + format, path + 'negy' + format, path + 'posz' + format, path + 'negz' + format];
+var format = '.png';
+// var urls	= [
+//   path + 'shape' + format, path + 'negx' + format,
+//   path + 'posy' + format, path + 'negy' + format,
+//   path + 'posz' + format, path + 'negz' + format
+// ]
+
+var urls = [path + 'sposx' + format, path + 'snegx' + format, path + 'sposy' + format, path + 'snegy' + format, path + 'sposz' + format, path + 'snegz' + format];
+
+var urls = [path + 'shape' + format];
 var textureCube = THREE.ImageUtils.loadTextureCube(urls);
 textureCube.format = THREE.RGBFormat;
+
+var texture = new THREE.TextureLoader().load("images/shape.png");
+
+material = new THREE.MeshBasicMaterial({ map: texture });
+
+console.log('texture', material);
+console.log('textureCube', textureCube);
 
 //////////////////////////////////////////////////////////////////////////////////
 //		comment								//
@@ -32,14 +51,14 @@ textureCube.format = THREE.RGBFormat;
 
 
 for (var i = 0; i < 100; i++) {
-  var mesh = new THREEx.BubbleMesh(textureCube);
+  var mesh = new THREEx.BubbleMesh(material);
   scene.add(mesh);
   // position the mesh
   mesh.position.x = (Math.random() - 0.5) * 10;
-  mesh.position.y = -10;
+  mesh.position.y = -15;
   mesh.position.z = 0;
   // set the scale of the mesh
-  // mesh.scale.multiplyScalar( Math.random() * 1 + 1 );
+  mesh.scale.multiplyScalar(Math.random() * 1 + 1);
 }
 
 var min = 1;
@@ -58,8 +77,8 @@ document.addEventListener('mousemove', function (event) {
 }, false);
 
 onRenderFcts.push(function (delta, now) {
-  camera.position.x += (mouse.x * 5 - camera.position.x) * (delta * 3);
-  camera.position.y += (mouse.y * 5 - camera.position.y) * (delta * 3);
+  // camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
+  // camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
   // camera.lookAt( scene.position )
 });
 
@@ -82,6 +101,7 @@ button.addEventListener('click', function () {
     if (timeleft <= 0) clearInterval(downloadTimer);
   }, 1000);
 });
+
 //function to call when shake occurs
 function shakeEventDidOccur() {
   var audio = new Audio('../vendor/bulles.mp3');
@@ -95,31 +115,25 @@ function shakeEventDidOccur() {
   mesh.position.z = (Math.random() - 0.5) * 4 - 4;
 }
 
-window.addEventListener('keydown', function (event) {
+window.addEventListener('keyup', function (event) {
 
   switch (event.which) {
     case 32:
-      var audio = new Audio('../vendor/bulles.mp3');
-      audio.play();
 
-      // onRenderFcts.push(function(delta, now){
-      //     mesh.position.x = (Math.random()-0.5)*5
-      //     mesh.position.y = (Math.random()-0.5)*5
-      //     camera.position.x += 0.5
-      //     camera.position.y += 0.5
-      // })
+      var _audio = new Audio('../vendor/bulles.mp3');
+      _audio.play();
 
       var _min = 1;
       var _max = 100;
       var _random = Math.floor(Math.random() * (_max - _min + 1)) + _min;
 
-      onRenderFcts.push(function (delta, now) {
-        var angle = 0.01 * now * Math.PI * 2;
-        console.log('now', now);
-        console.log('delta', delta);
-        scene.children[_random].position.y = 4 * angle;
-      });
+      var marginRandom = Math.random();
+      var firsTime = true;
 
+      onRenderFcts.push(function (delta, now) {
+        var angle = 0.01 * now * Math.PI * 2 - marginRandom;
+        scene.children[_random].position.y = 20 * angle;
+      });
       break;
 
     default:
@@ -128,7 +142,6 @@ window.addEventListener('keydown', function (event) {
   event.preventDefault();
 });
 
-console.log('scene', scene.children);
 //////////////////////////////////////////////////////////////////////////////////
 //		add a skybox							//
 //////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +155,8 @@ var material = new THREE.ShaderMaterial({
 });
 var geometry = new THREE.CubeGeometry(5000, 500, 500);
 var meshSkybox = new THREE.Mesh(geometry, material);
-scene.add(meshSkybox);
+// scene.add( meshSkybox );
+
 
 //////////////////////////////////////////////////////////////////////////////////
 //		render the scene						//
